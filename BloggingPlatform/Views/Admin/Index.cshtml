@@ -1,0 +1,109 @@
+﻿@model IEnumerable<BloggingPlatform.Models.Entity.Blog>
+
+@{
+    ViewData["Title"] = "Reported Blogs";
+}
+
+<head>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+</head>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Reported Blogs</h2>
+
+    <div class="row">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var blog in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm">
+                        <!-- Card Header -->
+                        <div class="card-header position-relative">
+                            <h5 class="card-title m-0 p-2">@(!string.IsNullOrEmpty(blog?.Title) ? blog.Title : "(null)")</h5>
+                            <div class="position-absolute" style="top: 10px; right: 10px;">
+                                <form asp-action="DeletePost" asp-route-id="@blog?.Id" method="post" class="d-inline-block" onsubmit="return confirm('Are you sure you want to delete this blog post?');">
+                                    <button type="submit" class="btn btn-link p-0 text-danger" title="Delete">
+                                        <i class="fas fa-trash fa-lg"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Card Body -->
+                        <div class="card-body">
+                            <p class="text-muted">Posted by: @(blog?.Author?.FullName ?? "(null)")</p>
+                            <p class="text-muted">Posted on: @(blog?.CreatedAt != null ? blog.CreatedAt.ToString("MMMM dd, yyyy") : "(null)")</p>
+                            <p class="card-text">@Html.Raw(!string.IsNullOrEmpty(blog?.Content) ? blog.Content : "(null)")</p>
+                        </div>
+
+                        <!-- Card Footer -->
+                        <div class="card-footer bg-white">
+                            <!-- Likes & Comments Info -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted"><i class="fas fa-thumbs-up text-primary"></i> @(blog?.Likes ?? 0) Likes</span>
+                                <span class="text-muted"><i class="fas fa-comments text-primary"></i> @(blog?.Comments?.Count() ?? 0) Comments</span>
+                            </div>
+
+                            <!-- Comments Section -->
+                            <div class="comments-section mt-3">
+                                <h5>Comments</h5>
+                                @if (blog?.Comments != null && blog.Comments.Any())
+                                {
+                                    <ul class="list-unstyled">
+                                        @foreach (var comment in blog.Comments)
+                                        {
+                                            <li class="border-bottom py-2">
+                                                <strong>@(comment?.Author):</strong> @(!string.IsNullOrEmpty(comment?.Content) ? comment.Content : "(null)")
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <p class="text-muted">No comments yet.</p>
+                                }
+                            </div>
+
+                            <!-- Reports Section -->
+                            <div class="reports-section mt-3">
+                                <h5 style="color:red">@(blog?.Reports?.Count() ?? 0)  Reports</h5>
+                                @if (blog?.Reports != null && blog.Reports.Any())
+                                {
+                                    <ul class="list-unstyled">
+                                        @foreach (var report in blog.Reports)
+                                        {
+                                            <li class="border-bottom py-2">
+                                                <strong>@(report?.Author?.FullName ?? "(null)"):</strong> @(!string.IsNullOrEmpty(report?.Description) ? report.Description : "(null)")
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <p class="text-muted">No reports for this blog.</p>
+                                }
+                            </div>
+
+                            <!-- View Post Button -->
+                            <a href="@Url.Action("Blog", new { id = blog?.Id })" class="btn btn-outline-primary btn-sm mt-3">View Post</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-info text-center" role="alert">
+                    No reported blogs found.
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+}

@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Error";
+}
+
+<h2>Error</h2>
+
+@if (ViewBag.Errors != null)
+{
+    <ul>
+        @foreach (var error in ViewBag.Errors)
+        {
+            <li>@error</li>
+        }
+    </ul>
+}
+
+<a href="@Url.Action("Index", "Blog")" class="btn btn-primary">Go Back to Blogs</a>

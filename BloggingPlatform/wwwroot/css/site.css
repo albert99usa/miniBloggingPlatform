@@ -1,0 +1,190 @@
+/* Light Theme (default) */
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+input {
+    margin: 0.5rem 0;
+}
+
+.float-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #60e0de;
+    color: white;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    text-decoration: none;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease-in-out;
+    z-index: 999;
+}
+
+    .float-button:hover {
+        background-color: #33dedb;
+        transform: scale(1.1);
+        box-shadow: 0px 12px 20px rgba(0, 0, 0, 0.35);
+        list-style: none;
+        text-decoration: none;
+    }
+
+    .float-button i {
+        transition: transform 0.3s ease;
+        color: white;
+    }
+
+    .float-button:hover i {
+        transform: rotate(45deg);
+    }
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Dark Theme for Blog Platform */
+body.dark-theme {
+    background-color:darkgrey; /* Dark but not pitch black for reduced strain */
+    color: white; /* Light grey for better readability */
+}
+
+.navbar.dark-theme {
+    background-color: #212121 !important; /* Slightly lighter than the body for contrast */
+    border-bottom-color: #424242 !important; /* Subtle border color */
+}
+
+.navbar .nav-link.dark-theme {
+    color: #e0e0e0 !important; /* Light grey links */
+}
+
+    .navbar .nav-link.dark-theme:hover {
+        color: #ffffff !important; /* White text on hover for clarity */
+        background-color: #333333 !important; /* Slight highlight */
+    }
+
+.btn.btn-outline-dark.dark-theme {
+    color: #e0e0e0; /* Light grey button text */
+    border-color: #e0e0e0;
+}
+
+    .btn.btn-outline-dark.dark-theme:hover {
+        background-color: #ffffff;
+        color: #212121; /* Dark text on light button for contrast */
+    }
+
+.card.dark-theme {
+    background-color: #222222; /* Slightly lighter than the body */
+    color: #e0e0e0;
+    border-color: #333333;
+}
+
+.card-header.dark-theme {
+    background-color: #333333;
+    color: #e0e0e0;
+}
+
+.card-body.dark-theme {
+    background-color: #222222;
+    color: #e0e0e0;
+}
+
+.form-control.dark-theme {
+    background-color: #333333;
+    color: #e0e0e0;
+    border-color: #555555;
+}
+
+    .form-control.dark-theme::placeholder {
+        color: #aaaaaa; /* Subtle grey for placeholders */
+    }
+
+.form-check-input.dark-theme {
+    background-color: #444444;
+    border-color: #555555;
+}
+
+input.dark-theme {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+    input.dark-theme::placeholder {
+        color: #bbbbbb;
+    }
+
+.float-button.dark-theme {
+    background-color: #1c88c7; /* Pleasant blue for a positive, modern look */
+}
+
+    .float-button.dark-theme:hover {
+        background-color: #176fa4; /* Slightly darker on hover */
+    }
+
+.float-button i.dark-theme {
+    color: #ffffff; /* White icon inside the floating button */
+}
+
+/* Typography improvements */
+h1.dark-theme, h2.dark-theme, h3.dark-theme, h4.dark-theme, h5.dark-theme, h6.dark-theme {
+    color: #ffffff; /* White headers for clarity */
+    font-weight: bold; /* Emphasize headings for better distinction */
+}
+
+p.dark-theme {
+    color: #e0e0e0; /* Lighter grey for body text to improve readability */
+    line-height: 1.6; /* Increase line spacing for better readability */
+}
+
+/* Links */
+a.dark-theme {
+    color: #1c88c7; /* Vibrant blue links */
+    text-decoration: underline; /* Underline for better distinction */
+}
+
+    a.dark-theme:hover {
+        color: #176fa4; /* Slightly darker on hover */
+        text-decoration: none; /* Remove underline on hover */
+    }
+
+/* Blockquotes */
+blockquote.dark-theme {
+    background-color: #282828; /* Slightly lighter background */
+    border-left: 4px solid #1c88c7; /* Blue border for quotes */
+    padding: 1rem;
+    color: #e0e0e0;
+}
+
+/* Code snippets */
+pre.dark-theme, code.dark-theme {
+    background-color: #2d2d2d; /* Dark background for code blocks */
+    color: #f8f8f2; /* Lighter color for code */
+    border-radius: 5px;
+    padding: 0.5rem;
+    font-family: "Courier New", Courier, monospace;
+}
+

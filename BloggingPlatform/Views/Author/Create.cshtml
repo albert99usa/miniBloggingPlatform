@@ -1,0 +1,83 @@
+﻿@model BloggingPlatform.Models.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "SignUp Page";
+}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h4 class="card-title text-center mb-4">Create Your Account</h4>
+                    <form asp-action="Create" method="post" id="createForm">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" placeholder="Enter your email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="Enter a password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="mb-3">
+                            <label for="ConfirmPassword" class="form-label">Confirm Password</label>
+                            <input id="ConfirmPassword" name="ConfirmPassword" type="password" class="form-control" placeholder="Confirm your password" />
+                            <span id="confirmPasswordError" class="text-danger"></span>
+                        </div>
+
+                        <!-- First Name -->
+                        <div class="mb-3">
+                            <label asp-for="FirstName" class="form-label"></label>
+                            <input asp-for="FirstName" class="form-control" placeholder="Enter your first name" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="mb-3">
+                            <label asp-for="LastName" class="form-label"></label>
+                            <input asp-for="LastName" class="form-control" placeholder="Enter your last name" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">Signup</button>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <a asp-action="Login" class="text-decoration-none">Already have an account? Login</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.getElementById('createForm').addEventListener('submit', function (event) {
+            var password = document.getElementById('Password').value;
+            var confirmPassword = document.getElementById('ConfirmPassword').value;
+            var errorMessage = document.getElementById('confirmPasswordError');
+
+            if (password !== confirmPassword) {
+                event.preventDefault(); // Prevent form submission
+                errorMessage.innerText = "The password and confirmation password do not match.";
+            } else {
+                errorMessage.innerText = ""; // Clear error message
+            }
+        });
+    </script>
+}

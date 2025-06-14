@@ -1,0 +1,195 @@
+﻿@model IEnumerable<BloggingPlatform.Models.Entity.Blog>
+
+@{
+    ViewData["Title"] = "All Blogs";
+    var authorName = ViewBag.AuthorName;
+    var authorId = ViewBag.AuthorId;
+    var authorEmail = ViewBag.AuthorEmail;
+    var categories = ViewBag.Categories as IEnumerable<BloggingPlatform.Models.Entity.Category>;
+    var selectedCategories = ViewBag.SelectedCategories as List<int> ?? new List<int>();
+}
+<link rel="stylesheet" href="~/css/index.css" asp-append-version="true" / >
+<div class="container mt-4">
+
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <form method="get" asp-action="FilterByCategory" asp-controller="Blog" id="categoryFilterForm">
+                <div class="category-filter-wrapper">
+                    <div class="filter-title">
+                        <i class="fas fa-tags"></i> Filter by Categories
+                    </div>
+
+                    <div class="selected-categories" id="selectedCategoriesDisplay">
+                        @foreach (var category in categories)
+                        {
+                            if (selectedCategories.Contains(category.Id))
+                            {
+                                <span class="selected-tag" data-id="@category.Id">
+                                    @category.Name
+                                    <i class="fas fa-times remove-tag"></i>
+                                </span>
+                            }
+                        }
+                    </div>
+
+                    <div class="category-selector">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="categorySearch" placeholder="Search categories...">
+                        </div>
+
+                        <div class="categories-dropdown" id="categoriesDropdown">
+                            @foreach (var category in categories)
+                            {
+                                <div class="category-option @(selectedCategories.Contains(category.Id) ? "selected" : "")"
+                                     data-id="@category.Id"
+                                     data-name="@category.Name">
+                                    <span class="category-name">@category.Name</span>
+                                    <i class="fas fa-check check-icon"></i>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="filter-actions">
+                        <span class="selected-count" id="selectedCount">
+                            @selectedCategories.Count categories selected
+                        </span>
+                        <div class="action-buttons">
+                            @if (selectedCategories.Any())
+                            {
+                                <a href="@Url.Action("Index", "Blog")" class="btn-clear">
+                                    Clear All
+                                </a>
+                            }
+                            <button type="submit" class="btn-apply">
+                                Apply Filters
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Hidden inputs for form submission -->
+                    <div id="categoryInputs">
+                        @foreach (var categoryId in selectedCategories)
+                        {
+                            <input type="hidden" name="categoryIds" value="@categoryId" />
+                        }
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        @foreach (var blog in Model)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <!-- Blog Header Section -->
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <a href="@Url.Action("Blog", "Blog", new { id = blog.Id })" class="text-decoration-none text-dark">
+                                @blog.Title
+                            </a>
+                        </h5>
+                        <h6>@blog.Category.Name</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            @Html.Raw(@blog.Content)
+                        </p>
+
+                        <hr />
+                        <!-- Likes Section -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <form asp-action="Like" asp-route-id="@blog.Id" method="post" onsubmit="return likeBlog(@blog.Id)">
+                                <button type="submit" class="btn">
+                                    <i class="fas fa-thumbs-up text-primary"></i> @blog.Likes Likes
+                                </button>
+                            </form>
+
+                            <span class="text-muted"><i class="fas fa-comments text-primary"></i> @blog.Comments.Count() Comments</span>
+
+                            <!-- Report Blog Button -->
+                            <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#reportBlogModal"
+                                    data-blog-id="@blog.Id"
+                                    data-author-id="@blog.AuthorId"
+                                    data-author-email="@authorEmail">
+                                <i class="fas fa-flag"></i> Report
+                            </button>
+                        </div>
+
+                        <!-- Comments Section -->
+                        <div class="comments-section mt-3">
+                            <h6>Comments</h6>
+                            @if (@blog.Comments != null && @blog.Comments.Any())
+                            {
+                                <ul class="list-unstyled">
+                                    @foreach (var comment in @blog.Comments)
+                                    {
+                                        <li class="border-bottom py-2"><strong>@comment.Author : </strong> @comment.Content</li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p class="text-muted">No comments yet.</p>
+                            }
+                        </div>
+
+                        <form asp-action="CommentOnPost" asp-route-id="@blog.Id" method="post">
+                            <!-- Hidden input for BlogId -->
+                            <input type="hidden" name="BlogId" value="@blog.Id" />
+
+                            <!-- Author field -->
+                            <input type="text" hidden name="Author" value=@authorName placeholder="Your name" required class="form-control" />
+
+                            <!-- Email field -->
+                            <input type="email" hidden name="Email" value=@authorEmail placeholder="Your email" required class="form-control" />
+
+                            <!-- Comment Content -->
+                            <textarea name="Content" placeholder="Your comment" required class="form-control"></textarea>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-primary mt-2">Add Comment</button>
+                        </form>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <p class="text-muted">Last updated on: <strong>@blog.UpdatedAt.ToString("MMMM dd, yyyy")</strong></p>
+                        <p>Posted by <strong>@blog.Author.FullName</strong> on <strong>@blog.CreatedAt.ToString("MMMM dd, yyyy")</strong></p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Report Blog Modal -->
+<div class="modal fade" id="reportBlogModal" tabindex="-1" aria-labelledby="reportBlogModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportBlogModalLabel">Report Blog</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="ReportBlog" method="post">
+                    <input type="hidden" name="BlogId" id="reportBlogId" />
+                    <input type="hidden" name="AuthorId" id="reportAuthorId" />
+                    <input type="hidden" name="AuthorEmail" id="reportAuthorEmail" />
+
+                    <div class="form-group">
+                        <label for="reportDescription">Description</label>
+                        <textarea class="form-control" id="reportDescription" name="Description" rows="3" required></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Submit Report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/index.js" asp-append-version="true"></script>

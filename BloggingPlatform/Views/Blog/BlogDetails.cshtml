@@ -1,0 +1,82 @@
+﻿@model BloggingPlatform.Models.Entity.Blog
+
+@{
+    ViewData["Title"] = "Blog Details";
+    var authorName = ViewBag.AuthorName;
+    var authorId = ViewBag.AuthorId;
+    var authorEmail = ViewBag.AuthorEmail;
+}
+
+<head>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+</head>
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <!-- Card Header -->
+                <div class="card-header position-relative">
+                    <h4 class="card-title m-0">@Model.Title</h4>
+                    <p class="mb-0">Posted by <strong>@Model.Author.FullName</strong> on <strong>@Model.CreatedAt.ToString("MMMM dd, yyyy")</strong></p>
+                </div>
+
+                <!-- Card Body -->
+                <div class="card-body">
+                    <p class="card-text">@Html.Raw(@Model.Content)</p>
+                    <p class="text-muted small">Last updated on: <strong>@Model.UpdatedAt.ToString("MMMM dd, yyyy")</strong></p>
+                </div>
+
+                <!-- Card Footer -->
+                <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                    <span class="text-muted"><i class="fas fa-thumbs-up text-primary"></i> @Model.Likes Likes</span>
+                    <span class="text-muted"><i class="fas fa-comments text-primary"></i> @Model.Comments.Count() Comments</span>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="card-body">
+                    <h5>Comments</h5>
+                    @if (Model.Comments != null && Model.Comments.Any())
+                    {
+                        <ul class="list-group">
+                            @foreach (var comment in Model.Comments)
+                            {
+                                <li class="list-group-item">
+                                    <strong>@comment.Author :</strong> @comment.Content
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No comments yet. Be the first to comment!</p>
+                    }
+                </div>
+
+                <!-- Add Comment Section -->
+                <div class="card-body border-top">
+                    <h5>Add a Comment:</h5>
+                    <form asp-action="CommentOnPost" asp-route-id="@Model.Id" method="post">
+                        <!-- Hidden input for BlogId -->
+                        <input type="hidden" name="BlogId" value="@Model.Id" />
+
+                        <!-- Hidden fields for Author and Email -->
+                        <input type="text" hidden name="Author" value="@authorName" />
+                        <input type="email" hidden name="Email" value="@authorEmail" />
+
+                        <!-- Comment Content -->
+                        <div class="form-group">
+                            <textarea name="Content" class="form-control" rows="3" placeholder="Your comment" required></textarea>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary mt-2"><i class="fas fa-comment"></i> Submit Comment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

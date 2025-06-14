@@ -1,0 +1,93 @@
+﻿@model IEnumerable<BloggingPlatform.Models.Entity.Blog>
+
+@{
+    ViewData["Title"] = "My Blogs";
+    var authorName = ViewBag.AuthorName;
+    var authorId = ViewBag.AuthorId;
+    var authorEmail = ViewBag.AuthorEmail;
+}
+
+<head>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+</head>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">My Blogs</h2>
+
+    <div class="row">
+        @foreach (var blog in Model)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <!-- Card Header -->
+                    <div class="card-header position-relative">
+                        <h5 class="card-title m-0 p-2">@blog.Title</h5>
+                        <div class="position-absolute" style="top: 10px; right: 10px;">
+                            <a asp-action="CreatorPage" asp-route-id="@blog.Id" class="text-info" style="text-decoration: none" title="Edit">
+                                <i class="fas fa-edit fa-lg"></i>
+                            </a>
+                            <form asp-action="Delete" asp-route-id="@blog.Id" method="post" class="d-inline-block" onsubmit="return confirm('Are you sure you want to delete this blog post?');">
+                                <button type="submit" class="btn btn-link p-0 text-danger" title="Delete">
+                                    <i class="fas fa-trash fa-lg"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <p class="card-text">@Html.Raw(@blog.Content)</p>
+                        <p class="text-muted">Posted on: @blog.CreatedAt.ToString("MMMM dd, yyyy")</p>
+                    </div>
+                    <div class="card-footer text-muted">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <form asp-action="Like" asp-route-id="@blog.Id" method="post" onsubmit="return likeBlog(@blog.Id)">
+                            <button type="submit" class="btn">
+                                <i class="fas fa-thumbs-up text-primary"></i> @blog.Likes Likes
+                            </button>
+                        </form>
+
+                        <span class="text-muted"><i class="fas fa-comments text-primary"></i> @blog.Comments.Count() Comments</span>
+
+                    </div>
+                    <!-- Comments Section -->
+                    <div class="comments-section mt-3">
+                        <h6>Comments</h6>
+                        @if (@blog.Comments != null && @blog.Comments.Any())
+                        {
+                            <ul class="list-unstyled">
+                                @foreach (var comment in @blog.Comments)
+                                {
+                                    <li class="border-bottom py-2"><strong>@comment.Author : </strong> @comment.Content</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No comments yet.</p>
+                        }
+                    </div>
+                    <form asp-action="CommentOnPost" asp-route-id="@blog.Id" method="post">
+                        <!-- Hidden input for BlogId -->
+                        <input type="hidden" name="BlogId" value="@blog.Id" />
+
+                        <!-- Author field -->
+                        <input type="text" hidden name="Author" value=@authorName placeholder="Your name" required class="form-control" />
+
+                        <!-- Email field -->
+                        <input type="email" hidden name="Email" value=@authorEmail placeholder="Your email" required class="form-control" />
+
+                        <!-- Comment Content -->
+                        <textarea name="Content" placeholder="Your comment" required class="form-control"></textarea>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary mt-2">Add Comment</button>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
